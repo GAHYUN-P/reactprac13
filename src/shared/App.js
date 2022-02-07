@@ -12,14 +12,19 @@ import {Grid} from "../elements/Index";
 import { ConnectedRouter } from 'connected-react-router';
 import { history } from "../redux/configureStore";
 
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import {actionCreators as userActions} from "../redux/modules/user";
 
 import {apiKey} from "./firebase";
+import Button from '../elements/Button';
+
+import PostWrite from '../pages/PostWrite';
+
 
 function App() {
     const dispatch = useDispatch();
 
+    const is_login = useSelector((state) => state.user.is_login);
     const _session_key = `firebase:authUser:${apiKey}:[DEFAULT]`;
             const is_session = sessionStorage.getItem(_session_key)
                 ? true
@@ -30,6 +35,23 @@ function App() {
             dispatch(userActions.loginCheckFB());
         }
     }, []);
+
+    if(is_login && is_session){
+        return (
+            <Grid>
+                <Header></Header>
+                <React.Fragment>
+                    <ConnectedRouter history={history}>
+                        <Route path="/" exact component={PostList}/>
+                        <Route path="/login" exact component={Login}/>
+                        <Route path="/signup" exact component={Signup}/>
+                        <Route path="/write" exact component={PostWrite}/>
+                    </ConnectedRouter>
+                </React.Fragment>
+                <Button is_float text="+"></Button>
+            </Grid>
+        );
+    }
 
     return (
         <Grid>
@@ -43,6 +65,7 @@ function App() {
             </React.Fragment>
         </Grid>
     );
+    
 }
 
 export default App;
