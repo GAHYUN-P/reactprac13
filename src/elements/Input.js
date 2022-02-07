@@ -1,6 +1,8 @@
 import React from "react";
 import styled from 'styled-components';
-import {Text,Grid} from "./Index";
+import Text from "./Text";
+import Grid from "./Grid";
+// import {Text,Grid} from "./Index.js";
 
 const Input = (props) => {
 
