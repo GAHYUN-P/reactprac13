@@ -10,7 +10,13 @@ const PostList = (props) => {
     console.log(post_list);
 
     React.useEffect(() => {
-        dispatch(postActions.getPostFB());
+
+        // 이미 리스트가 있을 때 새로 불러오지 않게끔, getPost를 하지 않게끔 해서
+        // 새로 추가된 리스트가 맨앞에 추가되게끔 함
+        if(post_list.length === 0) {
+            dispatch(postActions.getPostFB());
+        }
+        
 
     }, []);
 

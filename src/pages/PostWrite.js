@@ -2,8 +2,10 @@ import React from "react";
 import {Grid, Text, Button, Image, Input} from "../elements/Index.js";
 import Upload from "../shared/Upload";
 import {useSelector, useDispatch} from "react-redux";
+import { actionCreators as postActions } from "../redux/modules/post.js";
 
 const PostWrite = (props) => {
+    const dispatch = useDispatch();
     // 로그인 체크하기
     const is_login = useSelector((state) => state.user.is_login);
     const {history} = props;
@@ -13,6 +15,16 @@ const PostWrite = (props) => {
     // 텍스트 내용 받아오기
     const changeContents = (e) => {
         setContents(e.target.value);
+    }
+
+    // 작성글 firebase에 저장은 post.js에서 한다.
+
+    // 작성버튼과 연동
+    const addPost = () => {
+      dispatch(postActions.addPostFB(contents));
+      alert("작성이 완료되었습니다!");
+      // 새로고침 하기전에 게시물이 두개보이는것을 방지하기 위해 history말고 아래와같이 씀
+      window.location.replace("/");
     }
 
     if (!is_login) {
@@ -64,7 +76,7 @@ const PostWrite = (props) => {
             </Grid>
 
             <Grid padding="16px">
-                <Button text="게시글 작성"></Button>
+                <Button text="게시글 작성" _onClick={addPost}></Button>
             </Grid>
         </React.Fragment>
     );

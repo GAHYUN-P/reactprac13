@@ -45,6 +45,8 @@ Post.defaultProps = {
     contents: "달이 떴네요!",
     comment_cnt: 10,
     insert_dt: "2021-02-27 10:00:00",
-  };
+};
+
+
 
 export default Post;
