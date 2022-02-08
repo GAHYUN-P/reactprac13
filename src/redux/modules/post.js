@@ -1,7 +1,9 @@
-import {createAction, handleActions} from "redux-actions";
+import {createAction, handleActions } from "redux-actions";
 import {produce} from "immer";
-import { firestore } from "../../shared/firebase";
+import { firestore, storage } from "../../shared/firebase";
 import moment from "moment";
+import {actionCreators as imageActions} from "./image";
+
 
 const SET_POST = "SET_POST";
 const ADD_POST = "ADD_POST";
@@ -96,8 +98,10 @@ const addPostFB = (contents = "") => {
       // firebase에 post라는 collection을 선택하기
       const postDB = firestore.collection("post");
       
+      // getState()로 store의 상태값에 접근할 수 있어요!
       // 리덕스에 있는 유저 정보 전체 가져오기
       const _user = getState().user.user;
+      
 
       // 필요한 유저 정보 정리하기
       const user_info = {
@@ -116,28 +120,77 @@ const addPostFB = (contents = "") => {
       //   console.log(_post);
       //   console.log({...user_info, ..._post});
 
-      
-      // firebase에 정보 추가하기
-      postDB.add({...user_info, ..._post}).then((doc) => {
-          // 리덕스에 넣기 전 Post 컴포넌트의 데이터와 모양을 맞추기 위해 아이디를 추가해요!
-          let post = {user_info, ..._post, id: doc.id};
-                  console.log(post);
-          // 리덕스에 넣어보기
-          dispatch(addPost(post));
-      }).catch((err) => {
-          console.log('post 작성 실패!', err);
-      });
-    };
+      // store에 있는 이미지 프리뷰 정보 가져오기
+      const _image = getState().image.preview;
+
+      //   console.log(_image);
+      //   // _image의 타입 확인
+      //   console.log(typeof _image);
+
+// 파일 이름은 유저의 id와 현재 시간을 밀리초로 넣어줍시다! (혹시라도 중복이 생기지 않도록요!)
+const _upload = storage
+    .ref(
+        `images/${user_info.user_id}_${new Date().getTime()}`
+    )
+    .putString(_image, "data_url");
+
+_upload
+    .then((snapshot) => {
+        snapshot
+            .ref
+            .getDownloadURL()
+            .then((url) => {
+                // url을 확인해봐요!
+                console.log(url);
+                dispatch(imageActions.uploadImage(url));
+                return url;
+            })
+            .then((url) => {
+                // return으로 넘겨준 값이 잘 넘어왔나요? :) 다시 콘솔로 확인해주기!
+                console.log(url);
+
+                // firebase에 정보 추가하기
+                postDB
+                    .add({
+                        ...user_info,
+                        ..._post,
+                        image_url: url
+                    })
+                    .then((doc) => {
+                        // 리덕스에 넣기 전 Post 컴포넌트의 데이터와 모양을 맞추기 위해 아이디를 추가해요!
+                        let post = {
+                            user_info,
+                            ..._post,
+                            id: doc.id,
+                            image_url: url
+                        };
+                        console.log(post);
+                        // 리덕스에 넣어보기
+                        dispatch(addPost(post));
+
+                        dispatch(imageActions.setPreview(null));
+                    })
+                    .catch((err) => {
+                        window.alert("앗! 포스트 작성에 문제가 있어요!");
+                        console.log('post 작성 실패!', err);
+                    });
+            });
+    })
+    .catch((err) => {
+        window.alert("앗! 이미지 업로드에 문제가 있어요!");
+        console.log(err);
+    });
+};
 };
 
 // action creator export
 const actionCreators = {
-    setPost,
-    addPost,
-    getPostFB,
-    addPostFB,
+setPost,
+addPost,
+getPostFB,
+addPostFB
 };
 
 export {
-    actionCreators
+actionCreators
 };
