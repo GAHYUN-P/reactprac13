@@ -2,12 +2,13 @@ import React from "react";
 import {Grid, Text, Button, Image, Input} from "../elements/Index.js";
 import Upload from "../shared/Upload";
 import {useSelector, useDispatch} from "react-redux";
-import { actionCreators as postActions } from "../redux/modules/post.js";
+import {actionCreators as postActions} from "../redux/modules/post.js";
 
 const PostWrite = (props) => {
     const dispatch = useDispatch();
     // 로그인 체크하기
     const is_login = useSelector((state) => state.user.is_login);
+    const preview = useSelector((state) => state.image.preview);
     const {history} = props;
 
     const [contents, setContents] = React.useState('');
@@ -17,14 +18,14 @@ const PostWrite = (props) => {
         setContents(e.target.value);
     }
 
-    // 작성글 firebase에 저장은 post.js에서 한다.
-
-    // 작성버튼과 연동
+    // 작성글 firebase에 저장은 post.js에서 한다. 작성버튼과 연동
     const addPost = () => {
-      dispatch(postActions.addPostFB(contents));
-      alert("작성이 완료되었습니다!");
-      // 새로고침 하기전에 게시물이 두개보이는것을 방지하기 위해 history말고 아래와같이 씀
-      window.location.replace("/");
+        dispatch(postActions.addPostFB(contents));
+        alert("작성이 완료되었습니다!");
+        // 새로고침 하기전에 게시물이 두개보이는것을 방지하기 위해 history말고 아래와같이 씀
+        window
+            .location
+            .replace("/");
     }
 
     if (!is_login) {
@@ -64,7 +65,11 @@ const PostWrite = (props) => {
                     </Text>
                 </Grid>
 
-                <Image shape="rectangle"/>
+                <Image
+                    shape="rectangle"
+                    src={preview
+                        ? preview
+                        : "http://via.placeholder.com/400x300"}/>
             </Grid>
 
             <Grid padding="16px">
