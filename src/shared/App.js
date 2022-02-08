@@ -50,7 +50,7 @@ function App() {
                         <Route path="/post/:id" exact component={PostDetail}/>
                     </ConnectedRouter>
                 </React.Fragment>
-                <Button is_float text="+"></Button>
+                <Button is_float text="+" _onClick={() => {history.push('/write');}}></Button>
             </Grid>
         );
     }
@@ -63,6 +63,7 @@ function App() {
                     <Route path="/" exact component={PostList}/>
                     <Route path="/login" exact component={Login}/>
                     <Route path="/signup" exact component={Signup}/>
+                    <Route path="/write" exact component={PostWrite}/>
                 </ConnectedRouter>
             </React.Fragment>
         </Grid>
