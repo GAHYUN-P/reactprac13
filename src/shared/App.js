@@ -21,6 +21,8 @@ import Button from '../elements/Button';
 import PostWrite from '../pages/PostWrite';
 import PostDetail from '../pages/PostDetail';
 
+import Search from './Search';
+
 
 function App() {
     const dispatch = useDispatch();
@@ -64,6 +66,7 @@ function App() {
                     <Route path="/login" exact component={Login}/>
                     <Route path="/signup" exact component={Signup}/>
                     <Route path="/write" exact component={PostWrite}/>
+                    <Route path="/search" exact component={Search}/>
                 </ConnectedRouter>
             </React.Fragment>
         </Grid>
