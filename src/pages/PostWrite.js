@@ -3,15 +3,42 @@ import {Grid, Text, Button, Image, Input} from "../elements/Index.js";
 import Upload from "../shared/Upload";
 import {useSelector, useDispatch} from "react-redux";
 import {actionCreators as postActions} from "../redux/modules/post.js";
+import { actionCreators as imageActions } from "../redux/modules/image";
 
 const PostWrite = (props) => {
     const dispatch = useDispatch();
     // 로그인 체크하기
     const is_login = useSelector((state) => state.user.is_login);
     const preview = useSelector((state) => state.image.preview);
-    const {history} = props;
+    const post_list = useSelector((state) => state.post.list);
+    
+    // 주소창에서 params로 가져온 아이디
+    const post_id = props.match.params.id;
+    // 게시글 id 있냐 없냐
+    const is_edit = post_id ? true : false;
 
-    const [contents, setContents] = React.useState('');
+    const {history} = props;
+    
+    // 이게 수정모드니? 수정모드면 포스트리스트에서 p.id===post_id인 것을 찾아와
+    let _post = is_edit ? post_list.find((p) => p.id === post_id) : null;
+    console.log(_post);
+
+    const [contents, setContents] = React.useState(_post ? _post.contents : "");
+
+    // _post값이 없을때 메인 페이지로 돌아가게 하기
+    React.useEffect(() => {
+        // 수정 모드인데 _post가 존재하지 않는다면!
+        if (is_edit && !_post) {
+          console.log("포스트 정보가 없어요!");
+          history.goBack();
+    
+          return;
+        }
+    
+        if (is_edit) {
+          dispatch(imageActions.setPreview(_post.image_url));
+        }
+    }, []);
 
     // 텍스트 내용 받아오기
     const changeContents = (e) => {
@@ -23,9 +50,14 @@ const PostWrite = (props) => {
         dispatch(postActions.addPostFB(contents));
         alert("작성이 완료되었습니다!");
         // 새로고침 하기전에 게시물이 두개보이는것을 방지하기 위해 history말고 아래와같이 씀
-        window
-            .location
-            .replace("/");
+        // window
+        //     .location
+        //     .replace("/");
+    }
+
+    const editPost = () => {
+        console.log('editPost');
+        dispatch(postActions.editPostFB(post_id, {contents: contents}));
     }
 
     if (!is_login) {
@@ -53,7 +85,7 @@ const PostWrite = (props) => {
         <React.Fragment>
             <Grid padding="16px">
                 <Text margin="0px" size="36px" bold="bold">
-                    게시글 작성
+                    {is_edit ? "게시글 수정" : "게시글 작성"}
                 </Text>
                 <Upload/>
             </Grid>
@@ -74,14 +106,19 @@ const PostWrite = (props) => {
 
             <Grid padding="16px">
                 <Input
+                    value={contents}
                     _onChange={changeContents}
                     label="게시글 내용"
                     placeholder="게시글 작성"
-                    multiLine="multiLine"/>
+                    multiLine/>
             </Grid>
 
             <Grid padding="16px">
-                <Button text="게시글 작성" _onClick={addPost}></Button>
+                {is_edit ? (
+                  <Button text="게시글 수정" _onClick={editPost}></Button>
+                ) : (
+                  <Button text="게시글 작성" _onClick={addPost}></Button>
+                )}
             </Grid>
         </React.Fragment>
     );

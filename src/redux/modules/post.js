@@ -7,9 +7,14 @@ import {actionCreators as imageActions} from "./image";
 
 const SET_POST = "SET_POST";
 const ADD_POST = "ADD_POST";
+const EDIT_POST = "EDIT_POST";
 
 const setPost = createAction(SET_POST, (post_list) => ({post_list}));
 const addPost = createAction(ADD_POST, (post) => ({post}));
+const editPost = createAction(EDIT_POST, (post_id, post) => ({
+    post_id,
+    post,
+  }));
 
 const initialState = {
     list: []
@@ -30,17 +35,68 @@ const initialPost = {
     // 오늘 날짜가 moment 객체로 온다.
 };
 
-// reducer
-export default handleActions({
-    [SET_POST]: (state, action) => produce(state, (draft) => {
-        draft.list = action.payload.post_list;
-    }),
-
-    [ADD_POST]: (state, action) => produce(state, (draft) => {
-        draft.list.unshift(action.payload.post);
-        // 배열의 맨 앞에 붙여야해서 .unshift를 쓴다.
-    })
-}, initialState);
+// 게시글 수정하기
+const editPostFB = (post_id = null, post = {}) => {
+    return function (dispatch, getState, { history }) {
+      if (!post_id) {
+        console.log("게시물 정보가 없어요!");
+        return;
+      }
+      
+      // 프리뷰
+      const _image = getState().image.preview;
+      
+      // 게시글 하나의 정보
+      const _post_idx = getState().post.list.findIndex((p) => p.id === post_id);
+      const _post = getState().post.list[_post_idx];
+  
+      console.log(_post);
+  
+      const postDB = firestore.collection("post");
+      
+      // state의 preview하고 image url이 일치하면 텍스트 내용만 바꿔준다
+      if (_image === _post.image_url) {
+        postDB
+          .doc(post_id)
+          .update(post)
+          .then((doc) => {
+            dispatch(editPost(post_id, { ...post }));
+            history.replace("/");
+          });
+  
+        return;
+      // state의 preview하고 image url이 다르면 이미지도 바꿔준다
+      } else {
+        const user_id = getState().user.user.uid;
+        const _upload = storage
+          .ref(`images/${user_id}_${new Date().getTime()}`)
+          .putString(_image, "data_url");
+  
+        _upload.then((snapshot) => {
+          snapshot.ref
+            .getDownloadURL()
+            .then((url) => {
+              console.log(url);
+  
+              return url;
+            })
+            .then((url) => {
+              postDB
+                .doc(post_id)
+                .update({ ...post, image_url: url })
+                .then((doc) => {
+                  dispatch(editPost(post_id, { ...post, image_url: url }));
+                  history.replace("/");
+                });
+            })
+            .catch((err) => {
+              window.alert("앗! 이미지 업로드에 문제가 있어요!");
+              console.log("앗! 이미지 업로드에 문제가 있어요!", err);
+            });
+        });
+      }
+    };
+  };
 
 // 파이어스토어에서 데이터 가져오기
 const getPostFB = () => {
@@ -169,6 +225,7 @@ _upload
                         dispatch(addPost(post));
 
                         dispatch(imageActions.setPreview(null));
+                        history.replace("/");
                     })
                     .catch((err) => {
                         window.alert("앗! 포스트 작성에 문제가 있어요!");
@@ -183,12 +240,33 @@ _upload
 };
 };
 
+// reducer
+export default handleActions({
+    [SET_POST]: (state, action) => produce(state, (draft) => {
+        draft.list = action.payload.post_list;
+    }),
+
+    [ADD_POST]: (state, action) => produce(state, (draft) => {
+        draft.list.unshift(action.payload.post);
+        // 배열의 맨 앞에 붙여야해서 .unshift를 쓴다.
+    }),
+
+    [EDIT_POST]: (state, action) =>
+      produce(state, (draft) => {
+        // 조건 맞는애의 인덱스 정보를 줌
+        let idx = draft.list.findIndex((p) => p.id === action.payload.post_id);
+
+        draft.list[idx] = { ...draft.list[idx], ...action.payload.post };
+      }),
+}, initialState);
+
 // action creator export
 const actionCreators = {
 setPost,
 addPost,
 getPostFB,
-addPostFB
+addPostFB,
+editPostFB,
 };
 
 export {

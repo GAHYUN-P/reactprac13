@@ -25,7 +25,7 @@ const Image = (props) => {
 
     return (
         <React.Fragment>
-            
+            <ImageDefault {...styles}></ImageDefault>
         </React.Fragment>
     )
 }
@@ -35,6 +35,15 @@ Image.defaultProps = {
   src: "https://cdn.class101.net/images/2897cf87-e75e-4f7a-b9ff-a33800066b55",
   size: 36,
 };
+
+
+const ImageDefault = styled.div`
+  --size: ${(props) => props.size}px;
+  width: var(--size);
+  height: var(--size);
+  background-image: url("${(props) => props.src}");
+  background-size: cover;
+`;
 
 // 패딩 이용하여 반응형 네모 만들기
 const AspectOutter = styled.div`
@@ -49,6 +58,7 @@ const AspectInner = styled.div`
     overflow: hidden;
     background-image: url("${(props) => props.src}");
     background-size: cover;
+    background-position: center center;
 `;
 
 const ImageCircle = styled.div`
