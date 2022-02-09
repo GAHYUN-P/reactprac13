@@ -71,7 +71,7 @@ const Upload = (props) => {
         <React.Fragment>
             <input type="file" ref={fileInput} onChange={selectFile} disabled={is_uploading}/> 
             {/* disabled = {true} 일 때 버튼이 비활성화 false면 활성화 */}
-            <Button _onClick={uploadFB}>업로드하기</Button>
+            {/* <Button _onClick={uploadFB}>업로드하기</Button> */}
         </React.Fragment>
     )
 }

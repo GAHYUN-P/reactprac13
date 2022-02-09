@@ -4,22 +4,26 @@ import { firestore, storage } from "../../shared/firebase";
 import moment from "moment";
 import {actionCreators as imageActions} from "./image";
 
-
+//action
 const SET_POST = "SET_POST";
 const ADD_POST = "ADD_POST";
 const EDIT_POST = "EDIT_POST";
+const DELETE_POST = "DELETE_POST";
 
+//action creators
 const setPost = createAction(SET_POST, (post_list) => ({post_list}));
 const addPost = createAction(ADD_POST, (post) => ({post}));
 const editPost = createAction(EDIT_POST, (post_id, post) => ({
     post_id,
     post,
   }));
+const deletePost = createAction(DELETE_POST, (post_id) => ({ post_id }));
 
 const initialState = {
     list: []
 }
 
+// middleware
 // 게시글 하나에는 어떤 정보가 있어야 하는 지 하나 만들어둡시다! :)
 const initialPost = {
     // user_info: {
@@ -33,6 +37,26 @@ const initialPost = {
     insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
     // insert_dt: "2021-02-27 10:00:00"
     // 오늘 날짜가 moment 객체로 온다.
+    like_cnt: 0,
+    like_list: [],
+};
+
+// 게시글 삭제하기
+const deletePostFB = (post_id) => {
+  const postDB = firestore.collection("post");
+
+  return function (dispatch, getState, { history }) {
+    postDB
+      .doc(post_id)
+      .delete()
+      .then(() => {
+        history.replace("/");
+        dispatch(deletePost(post_id));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 };
 
 // 게시글 수정하기
@@ -258,6 +282,11 @@ export default handleActions({
 
         draft.list[idx] = { ...draft.list[idx], ...action.payload.post };
       }),
+
+      [DELETE_POST]: (state, action) =>
+      produce(state, (draft) => {
+        draft.list = draft.list.filter((l) => l.id !== action.payload.post_id);
+      }),
 }, initialState);
 
 // action creator export
@@ -267,6 +296,7 @@ addPost,
 getPostFB,
 addPostFB,
 editPostFB,
+deletePostFB,
 };
 
 export {

@@ -23,6 +23,7 @@ import PostDetail from '../pages/PostDetail';
 
 import Search from './Search';
 import Notification from "../pages/Notification";
+import PostDelete from '../pages/PostDelete';
 
 
 function App() {
@@ -51,7 +52,7 @@ function App() {
                         <Route path="/signup" exact component={Signup}/>
                         <Route path="/write" exact component={PostWrite}/>
                         <Route path="/write/:id" exact component={PostWrite}/>
-                        <Route path="/post/:id" exact component={PostDetail}/>
+                        <Route path="/delete/:id" exact component={PostDelete}/>
                         <Route path="/noti" exact component={Notification} />
                     </ConnectedRouter>
                 </React.Fragment>
