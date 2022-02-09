@@ -39,6 +39,7 @@ const initialPost = {
     // 오늘 날짜가 moment 객체로 온다.
     like_cnt: 0,
     like_list: [],
+    layout: "",
 };
 
 // 게시글 삭제하기
@@ -173,7 +174,7 @@ const getPostFB = () => {
 };
 
 // firebase에 작성글내용 저장하는 함수
-const addPostFB = (contents = "") => {
+const addPostFB = (contents = "", layout="") => {
     return function (dispatch, getState, { history }) {
       // firebase에 post라는 collection을 선택하기
       const postDB = firestore.collection("post");
@@ -194,10 +195,11 @@ const addPostFB = (contents = "") => {
       const _post = {
         ...initialPost,
         contents: contents,
-        insert_dt: moment().format("YYYY-MM-DD hh:mm:ss")
+        insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
+        layout: layout,
       };
       // 잘 만들어졌나 확인해보세요!!
-      //   console.log(_post);
+        console.log(_post);
       //   console.log({...user_info, ..._post});
 
       // store에 있는 이미지 프리뷰 정보 가져오기

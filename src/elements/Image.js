@@ -2,11 +2,12 @@ import styled from 'styled-components';
 import React from "react";
 
 const Image = (props) => {
-    const {shape, src, size} = props;
+    const {shape, src, size, half} = props;
 
     const styles = {
         src: src,
         size: size,
+        half: half,
     }
 
     if(shape === "circle"){
@@ -34,6 +35,7 @@ Image.defaultProps = {
   shape: "circle",
   src: "https://cdn.class101.net/images/2897cf87-e75e-4f7a-b9ff-a33800066b55",
   size: 36,
+  half: false,
 };
 
 
@@ -48,7 +50,8 @@ const ImageDefault = styled.div`
 // 패딩 이용하여 반응형 네모 만들기
 const AspectOutter = styled.div`
     width: 100%;
-    min-width: 250px;
+    
+  }
 `;
 
 
@@ -59,6 +62,12 @@ const AspectInner = styled.div`
     background-image: url("${(props) => props.src}");
     background-size: cover;
     background-position: center center;
+    ${(props) => (props.half ? `flex-basis: 50%;` : "")}
+    @media (max-width: 280px) {
+      min-width: 150px;
+    }
+    @media (max-width: 360px) {
+      min-width: 180px;
 `;
 
 const ImageCircle = styled.div`
