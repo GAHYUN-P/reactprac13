@@ -13,6 +13,7 @@ const Post = (props) => {
             ?.uid
     );
     const post = useSelector((state) => state.post.list);
+    const {layout} = props;
 
     const [like, setLike] = React.useState(false);
     const [color, setColor] = React.useState("unLike");
@@ -111,12 +112,40 @@ const Post = (props) => {
                             }
                         </Grid>
                     </Grid>
-                    <Grid padding="16px">
-                        <Text>{props.contents}</Text>
+
+                    {layout === "right" && (
+                        <Grid padding="16px" is_flex>
+                        <Grid>
+                            <Text>{props.contents}</Text>
+                        </Grid>
+                        <Grid margin="5px">
+                            <Image half shape="rectangle" src={props.image_url}/>
+                        </Grid>
                     </Grid>
-                    <Grid>
-                        <Image shape="rectangle" src={props.image_url}/>
+                    )}
+                    
+                    {layout === "left" && (
+                        <Grid padding="16px" is_flex>
+                        <Grid>
+                            <Image half shape="rectangle" src={props.image_url}/>
+                        </Grid>
+                        <Grid margin="5px">
+                            <Text>{props.contents}</Text>
+                        </Grid>
                     </Grid>
+                    )}
+
+                    {layout === "bottom" && (
+                        <Grid padding="16px">
+                        <Grid>
+                            <Image shape="rectangle" src={props.image_url}/>
+                        </Grid>
+                        <Grid>
+                            <Text>{props.contents}</Text>
+                        </Grid>
+                    </Grid>
+                    )}
+
                     <Grid padding="16px" is_flex>
                         <Text margin="0px" bold="bold" >댓글 {props.comment_cnt}개</Text>
                         <Grid width="30%"is_flex>
@@ -172,12 +201,40 @@ const Post = (props) => {
                         }
                     </Grid>
                 </Grid>
-                <Grid padding="16px">
-                    <Text>{props.contents}</Text>
+
+
+                {layout === "right" && (
+                    <Grid padding="16px" is_flex>
+                    <Grid>
+                        <Text>{props.contents}</Text>
+                    </Grid>
+                    <Grid>
+                        <Image half shape="rectangle" src={props.image_url}/>
+                    </Grid>
                 </Grid>
-                <Grid>
-                    <Image shape="rectangle" src={props.image_url}/>
+                )}
+                
+                {layout === "left" && (
+                    <Grid padding="16px" is_flex>
+                    <Grid>
+                        <Image half shape="rectangle" src={props.image_url}/>
+                    </Grid>
+                    <Grid>
+                        <Text>{props.contents}</Text>
+                    </Grid>
                 </Grid>
+                )}
+                {layout === "bottom" && (
+                    <Grid padding="16px">
+                    <Grid>
+                        <Image shape="rectangle" src={props.image_url}/>
+                    </Grid>
+                    <Grid>
+                        <Text>{props.contents}</Text>
+                    </Grid>
+                </Grid>
+                )}
+                
                 <Grid padding="16px" is_flex="is_flex">
                     <Text margin="0px" bold="bold">댓글 {props.comment_cnt}개</Text>
                     <Text bold="bold">좋아요 {props.like_cnt}개</Text>
