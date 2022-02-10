@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {Grid, Text, Button, Image, Input} from "../elements/Index.js";
 import Upload from "../shared/Upload";
 import {useSelector, useDispatch} from "react-redux";
@@ -25,14 +25,18 @@ const PostWrite = (props) => {
     let _post = is_edit
         ? post_list.find((p) => p.id === post_id)
         : null;
-    
-    const [layout, setLayout] = useState(_post ? _post.layout : "bottom");
+
+    const [layout, setLayout] = useState(
+        _post
+            ? _post.layout
+            : "bottom"
+    );
     const [contents, setContents] = React.useState(
         _post
             ? _post.contents
             : ""
     );
-    
+
     // _post값이 없을때 메인 페이지로 돌아가게 하기
 
     React.useEffect(() => {
@@ -44,10 +48,10 @@ const PostWrite = (props) => {
             return;
         }
 
-        if(!is_edit) {
+        if (!is_edit) {
             dispatch(imageActions.setPreview(""));
         }
-        
+
         if (is_edit) {
             dispatch(imageActions.setPreview(_post.image_url));
         }
@@ -60,7 +64,7 @@ const PostWrite = (props) => {
 
     const is_checked = (e) => {
         if (e.target.checked) {
-          setLayout(e.target.value);
+            setLayout(e.target.value);
         }
     };
 
@@ -111,117 +115,118 @@ const PostWrite = (props) => {
                 <Upload/>
             </Grid>
 
-            <Grid>
-                <Grid padding="16px">
-                    <Text margin="0px" size="24px" bold="bold">
-                        미리보기
-                    </Text>
+            <Grid padding="16px">
+                <Grid>
+                    <Grid padding="16px">
+                        <Text margin="0px" size="24px" bold="bold">
+                            미리보기
+                        </Text>
+                    </Grid>
+
+                    <Image
+                        shape="rectangle"
+                        src={preview
+                            ? preview
+                            : "http://via.placeholder.com/400x300"}/>
                 </Grid>
 
-                <Image
-                    shape="rectangle"
-                    src={preview
-                        ? preview
-                        : "http://via.placeholder.com/400x300"}/>
-            </Grid>
+                <Grid width="75%" padding="16px" is_flex="is_flex">
+                    <input
+                        type="radio"
+                        name="layout"
+                        value="right"
+                        id="right"
+                        onChange={is_checked}/>
+                    <label htmlFor="right">
+                        <Text
+                            style={layout === "right"
+                                ? {
+                                    color: "#1B9CFC",
+                                    margin: "10px"
+                                }
+                                : null
+                            }>
+                            오른쪽에 이미지 왼쪽에 텍스트
+                        </Text>
+                    </label>
+                </Grid>
+                <Grid is_flex="is_flex">
+                    <Text width="80%" margin="10px" center="center">
+                        {contents}
+                    </Text>
+                    <Image
+                        half="half"
+                        shape="big_square"
+                        src={preview
+                            ? preview
+                            : "https://user-images.githubusercontent.com/75834421/124501682-fb25fd00-ddfc-11e" +
+                                    "b-93ec-c0330dff399b.jpg"
+                            }/>
+                </Grid>
+                <Grid width="75%" padding="16px" is_flex="is_flex">
+                    <input type="radio" name="layout" value="left" id="left" onChange={is_checked}/>
+                    <label htmlFor="left">
+                        <Text
+                            style={layout === "left"
+                                ? {
+                                    color: "#1B9CFC",
+                                    margin: "10px"
+                                }
+                                : null
+                            }>
+                            왼쪽에 이미지 오른쪽에 텍스트
+                        </Text>
+                    </label>
+                </Grid>
+                <Grid is_flex="is_flex">
+                    <Image
+                        half="half"
+                        shape="big_square"
+                        src={preview
+                            ? preview
+                            : "https://user-images.githubusercontent.com/75834421/124501682-fb25fd00-ddfc-11e" +
+                                    "b-93ec-c0330dff399b.jpg"
+                            }/>
+                    <Text width="80%" margin="10px" center="center">
+                        {contents}
+                    </Text>
+                </Grid>
+                <Grid width="75%" padding="16px" is_flex="is_flex">
+                    <input
+                        type="radio"
+                        name="layout"
+                        value="bottom"
+                        id="bottom"
+                        onChange={is_checked}
+                        style={{
+                            color: "skyblue"
+                        }}/>
+                    <label htmlFor="bottom">
+                        {" "}
+                        <Text
+                            style={layout === "bottom"
+                                ? {
+                                    color: "#1B9CFC",
+                                    margin: "10px"
+                                }
+                                : null
+                            }>
+                            하단에 이미지 상단에 텍스트
+                        </Text>
+                    </label>
+                </Grid>
+                <Grid>
+                    <Text margin="10px">{contents}</Text>
+                    <Image
+                        shape="big_square"
+                        src={preview
+                            ? preview
+                            : "https://user-images.githubusercontent.com/75834421/124501682-fb25fd00-ddfc-11e" +
+                                    "b-93ec-c0330dff399b.jpg"
+                            }/>
+                </Grid>
 
-            <Grid width="75%" padding="16px" is_flex>
-                <input
-                    type="radio"
-                    name="layout"
-                    value="right"
-                    id="right"
-                    onChange={is_checked}/>
-                <label htmlFor="right">
-                    <Text
-                        style={layout === "right"
-                            ? {
-                                color: "#1B9CFC",
-                                margin: "10px"
-                            }
-                            : null
-                    }>
-                        오른쪽에 이미지 왼쪽에 텍스트
-                    </Text>
-                </label>
             </Grid>
-            <Grid is_flex="is_flex">
-                <Text width="80%" margin="10px" center="center">
-                    {contents}
-                </Text>
-                <Image
-                    half="half"
-                    shape="big_square"
-                    src={preview
-                        ? preview
-                        : "https://user-images.githubusercontent.com/75834421/124501682-fb25fd00-ddfc-11e" +
-                                "b-93ec-c0330dff399b.jpg"
-                }/>
-            </Grid>
-            <Grid width="75%" padding="16px" is_flex>
-                <input type="radio" name="layout" value="left" id="left" onChange={is_checked}/>
-                <label htmlFor="left">
-                    <Text
-                        style={layout === "left"
-                            ? {
-                                color: "#1B9CFC",
-                                margin: "10px"
-                            }
-                            : null
-                }>
-                        왼쪽에 이미지 오른쪽에 텍스트
-                    </Text>
-                </label>
-            </Grid>
-            <Grid is_flex="is_flex">
-                <Image
-                    half="half"
-                    shape="big_square"
-                    src={preview
-                        ? preview
-                        : "https://user-images.githubusercontent.com/75834421/124501682-fb25fd00-ddfc-11e" +
-                                "b-93ec-c0330dff399b.jpg"
-                }/>
-                <Text width="80%" margin="10px" center="center">
-                    {contents}
-                </Text>
-            </Grid>
-            <Grid width="75%" padding="16px" is_flex>
-                <input
-                    type="radio"
-                    name="layout"
-                    value="bottom"
-                    id="bottom"
-                    onChange={is_checked}
-                    style={{
-                        color: "skyblue"
-                    }}/>
-                <label htmlFor="bottom">
-                    {" "}
-                    <Text
-                        style={layout === "bottom"
-                            ? {
-                                color: "#1B9CFC",
-                                margin: "10px"
-                            }
-                            : null
-                }>
-                        하단에 이미지 상단에 텍스트
-                    </Text>
-                </label>
-            </Grid>
-            <Grid>
-                <Text margin="10px">{contents}</Text>
-                <Image
-                    shape="big_square"
-                    src={preview
-                        ? preview
-                        : "https://user-images.githubusercontent.com/75834421/124501682-fb25fd00-ddfc-11e" +
-                                "b-93ec-c0330dff399b.jpg"
-                }/>
-            </Grid>
-
-            
 
             <Grid padding="16px">
                 <Input
@@ -233,10 +238,27 @@ const PostWrite = (props) => {
             </Grid>
 
             <Grid padding="16px">
+                <Text size="10px" margin="0px">
+                    * 내용을 모두 입력하면 게시글 작성 버튼이 활성화 됩니다!
+                </Text>
                 {
                     is_edit
-                        ? (<Button text="게시글 수정" _onClick={editPost}></Button>)
-                        : (<Button text="게시글 작성" _onClick={addPost}></Button>)
+                        ? (
+                            <Button
+                                text="게시글 수정"
+                                _onClick={editPost}
+                                _disabled={!preview || contents === ""
+                                    ? true
+                                    : false}></Button>
+                        )
+                        : (
+                            <Button
+                                text="게시글 작성"
+                                _onClick={addPost}
+                                _disabled={!preview || contents === ""
+                                    ? true
+                                    : false}></Button>
+                        )
                 }
             </Grid>
         </React.Fragment>
