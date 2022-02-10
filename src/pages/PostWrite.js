@@ -37,6 +37,8 @@ const PostWrite = (props) => {
             : ""
     );
 
+    
+
     // _post값이 없을때 메인 페이지로 돌아가게 하기
 
     React.useEffect(() => {
@@ -70,7 +72,7 @@ const PostWrite = (props) => {
 
     // 작성글 firebase에 저장은 post.js에서 한다. 작성버튼과 연동
     const addPost = () => {
-        dispatch(postActions.addPostFB(contents, layout));
+        dispatch(postActions.addPostFB(contents, layout, post_id));
         alert("작성이 완료되었습니다!");
         // 새로고침 하기전에 게시물이 두개보이는것을 방지하기 위해 history말고 아래와같이 씀 window     .location
         // .replace("/");

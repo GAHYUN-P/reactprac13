@@ -5,13 +5,16 @@ import {history} from '../redux/configureStore';
 import {useDispatch, useSelector} from "react-redux";
 import {actionCreators as likeActions} from "../redux/modules/like";
 import {apiKey} from '../shared/firebase';
-import styled from 'styled-components'
+import styled from 'styled-components';
+import LikeClick from './LikeClick';
 
 const Post = (props) => {
     const user_id = useSelector(
         (state) => state.user.user
             ?.uid
     );
+
+    console.log(user_id);
     const post = useSelector((state) => state.post.list);
     const {layout} = props;
 
@@ -45,15 +48,13 @@ const Post = (props) => {
     })
 
     const likeClick = (props) => {
+
         const post_id = props.id; // 게시물 정보
         const like_cnt = props.like_cnt; // 좋아요 갯수
         const post_user_id = props.user_info.user_id; // 게시물 작성자
         const like_list = props.like_list; // 좋아요 누른 사람들 아이디
 
-        // 게시물 작성자인 지 체크 if (post_user_id === user_id) {     window.alert("작성자의 게시물에는
-        // 좋아요를 누르실 수 없습니다.");     return; }  else if(like_list.includes(user_id)){  이게
-        // 진짜 필요할까??   window.alert("이미 좋아요를  눌렀습니다.")   return; }
-
+        console.log(post_user_id);
         if (like) {
             // 안좋아요
             setLike(false);
@@ -77,6 +78,7 @@ const Post = (props) => {
     if (is_login && is_session) {
         return (
             <div>
+                {/* <LikeClick key={props.id} {...props}/> */}
                 <Grid>
                     {/* 여기 값이 Grid의 children으로 넘어간다 */}
                     <Grid is_flex="is_flex" padding="16px">
@@ -113,42 +115,48 @@ const Post = (props) => {
                         </Grid>
                     </Grid>
 
-                    {layout === "right" && (
-                        <Grid padding="16px" is_flex>
-                        <Grid>
-                            <Text>{props.contents}</Text>
-                        </Grid>
-                        <Grid margin="5px">
-                            <Image half shape="rectangle" src={props.image_url}/>
-                        </Grid>
-                    </Grid>
-                    )}
-                    
-                    {layout === "left" && (
-                        <Grid padding="16px" is_flex>
-                        <Grid>
-                            <Image half shape="rectangle" src={props.image_url}/>
-                        </Grid>
-                        <Grid margin="5px">
-                            <Text>{props.contents}</Text>
-                        </Grid>
-                    </Grid>
-                    )}
+                    {
+                        layout === "right" && (
+                            <Grid padding="16px" is_flex="is_flex">
+                                <Grid>
+                                    <Text>{props.contents}</Text>
+                                </Grid>
+                                <Grid margin="5px">
+                                    <Image half="half" shape="rectangle" src={props.image_url}/>
+                                </Grid>
+                            </Grid>
+                        )
+                    }
 
-                    {layout === "bottom" && (
-                        <Grid padding="16px">
-                        <Grid>
-                            <Image shape="rectangle" src={props.image_url}/>
-                        </Grid>
-                        <Grid>
-                            <Text>{props.contents}</Text>
-                        </Grid>
-                    </Grid>
-                    )}
+                    {
+                        layout === "left" && (
+                            <Grid padding="16px" is_flex="is_flex">
+                                <Grid>
+                                    <Image half="half" shape="rectangle" src={props.image_url}/>
+                                </Grid>
+                                <Grid margin="5px">
+                                    <Text>{props.contents}</Text>
+                                </Grid>
+                            </Grid>
+                        )
+                    }
 
-                    <Grid padding="16px" is_flex>
-                        <Text margin="0px" bold="bold" >댓글 {props.comment_cnt}개</Text>
-                        <Grid width="30%"is_flex>
+                    {
+                        layout === "bottom" && (
+                            <Grid padding="16px">
+                                <Grid>
+                                    <Image shape="rectangle" src={props.image_url}/>
+                                </Grid>
+                                <Grid>
+                                    <Text>{props.contents}</Text>
+                                </Grid>
+                            </Grid>
+                        )
+                    }
+
+                    <Grid padding="16px" is_flex="is_flex">
+                        <Text margin="0px" bold="bold">댓글 {props.comment_cnt}개</Text>
+                        <Grid width="30%" is_flex="is_flex">
                             <Text bold="bold">좋아요 {props.like_cnt}개</Text>
                             <Like
                                 {...styles}
@@ -202,45 +210,51 @@ const Post = (props) => {
                     </Grid>
                 </Grid>
 
+                {
+                    layout === "right" && (
+                        <Grid padding="16px" is_flex="is_flex">
+                            <Grid>
+                                <Text>{props.contents}</Text>
+                            </Grid>
+                            <Grid>
+                                <Image half="half" shape="rectangle" src={props.image_url}/>
+                            </Grid>
+                        </Grid>
+                    )
+                }
 
-                {layout === "right" && (
-                    <Grid padding="16px" is_flex>
-                    <Grid>
-                        <Text>{props.contents}</Text>
-                    </Grid>
-                    <Grid>
-                        <Image half shape="rectangle" src={props.image_url}/>
-                    </Grid>
-                </Grid>
-                )}
-                
-                {layout === "left" && (
-                    <Grid padding="16px" is_flex>
-                    <Grid>
-                        <Image half shape="rectangle" src={props.image_url}/>
-                    </Grid>
-                    <Grid>
-                        <Text>{props.contents}</Text>
-                    </Grid>
-                </Grid>
-                )}
-                {layout === "bottom" && (
-                    <Grid padding="16px">
-                    <Grid>
-                        <Image shape="rectangle" src={props.image_url}/>
-                    </Grid>
-                    <Grid>
-                        <Text>{props.contents}</Text>
-                    </Grid>
-                </Grid>
-                )}
-                
+                {
+                    layout === "left" && (
+                        <Grid padding="16px" is_flex="is_flex">
+                            <Grid>
+                                <Image half="half" shape="rectangle" src={props.image_url}/>
+                            </Grid>
+                            <Grid>
+                                <Text>{props.contents}</Text>
+                            </Grid>
+                        </Grid>
+                    )
+                }
+                {
+                    layout === "bottom" && (
+                        <Grid padding="16px">
+                            <Grid>
+                                <Image shape="rectangle" src={props.image_url}/>
+                            </Grid>
+                            <Grid>
+                                <Text>{props.contents}</Text>
+                            </Grid>
+                        </Grid>
+                    )
+                }
+
                 <Grid padding="16px" is_flex="is_flex">
                     <Text margin="0px" bold="bold">댓글 {props.comment_cnt}개</Text>
                     <Text bold="bold">좋아요 {props.like_cnt}개</Text>
                 </Grid>
 
             </Grid>
+
         </div>
     );
 }

@@ -1,3 +1,5 @@
+// 데이터 칼럼에 게시글 id를 넣고싶은데..
+
 import {createAction, handleActions } from "redux-actions";
 import {produce} from "immer";
 import { firestore, storage } from "../../shared/firebase";
